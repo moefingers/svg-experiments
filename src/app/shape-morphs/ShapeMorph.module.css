@@ -1,0 +1,87 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  background: #fff;
+  /* Each card sets its own shape fill so the gallery can color variants
+     distinctly. Tweak per-card via inline style. */
+  --shape-fill: #4f46e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: #18181b;
+  }
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 12rem;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.label {
+  font-size: 0.6875rem;
+  color: #71717a;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.morphing {
+  color: #a1a1aa;
+}
+
+.toggle {
+  margin-top: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.375rem;
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms;
+}
+.toggle:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.04);
+}
+.toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+@media (prefers-color-scheme: dark) {
+  .toggle {
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e4e4e7;
+  }
+  .toggle:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}

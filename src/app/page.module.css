@@ -56,6 +56,18 @@
   max-width: 100%;
 }
 
+/* Interactive experiments don't have a canonical sample SVG, so the
+   preview slot shows a textual hint instead. Sized generously so the
+   card weight matches the SVG-preview siblings. */
+.previewInline {
+  font-size: calc(
+    var(--font-size-3xl) * var(--app-size, 1) * var(--room-size, 1)
+  );
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+  letter-spacing: 0.1em;
+}
+
 .caption {
   border-top: 1px solid var(--border);
   padding: calc(var(--space-4) * var(--app-pad, 1) * var(--room-pad, 1));

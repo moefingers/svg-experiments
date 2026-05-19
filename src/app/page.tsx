@@ -7,6 +7,8 @@ interface Gallery {
   title: string;
   href: string;
   sample: string;
+  /** When true, treat `sample` as an inline label rather than an <img> src. */
+  inlinePreview?: boolean;
 }
 
 /**
@@ -39,6 +41,12 @@ const GALLERIES: Gallery[] = [
     href: "/verified-banner-experiments",
     sample: "/verified-banner-experiments/11.1-globe-spin-y-axis.svg",
   },
+  {
+    title: "Shape morphs",
+    href: "/shape-morphs",
+    sample: "△ ⇄ ⬡",
+    inlinePreview: true,
+  },
 ];
 
 export default function Home() {
@@ -57,12 +65,16 @@ export default function Home() {
           <li key={g.href}>
             <Link href={g.href} className={styles.cardLink}>
               <div className={styles.preview}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`${BASE_PATH}${g.sample}`}
-                  alt=""
-                  className={styles.previewImg}
-                />
+                {g.inlinePreview ? (
+                  <span className={styles.previewInline}>{g.sample}</span>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={`${BASE_PATH}${g.sample}`}
+                    alt=""
+                    className={styles.previewImg}
+                  />
+                )}
               </div>
               <div className={styles.caption}>
                 <h2 className="font-medium">{g.title}</h2>

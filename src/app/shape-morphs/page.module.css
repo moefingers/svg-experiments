@@ -1,0 +1,117 @@
+.shell {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  color: #71717a;
+  text-decoration: none;
+}
+.backLink:hover {
+  color: #18181b;
+}
+@media (prefers-color-scheme: dark) {
+  .backLink:hover {
+    color: #fafafa;
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.intro {
+  font-size: 0.875rem;
+  color: #52525b;
+  line-height: 1.5;
+  max-width: 42rem;
+}
+@media (prefers-color-scheme: dark) {
+  .intro {
+    color: #a1a1aa;
+  }
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+@media (prefers-color-scheme: dark) {
+  .sectionTitle {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.sectionIntro {
+  font-size: 0.8125rem;
+  color: #52525b;
+  line-height: 1.55;
+  margin: -0.5rem 0 1rem;
+  max-width: 42rem;
+}
+.sectionIntro code {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.78125rem;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  .sectionIntro {
+    color: #a1a1aa;
+  }
+  .sectionIntro code {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 1rem;
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: #52525b;
+}
+.notes code {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.78125rem;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  .notes {
+    color: #a1a1aa;
+  }
+  .notes code {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
