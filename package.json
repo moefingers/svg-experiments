@@ -1,0 +1,44 @@
+{
+  "name": "svg-experiments",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "prepare": "husky",
+    "svg:update-index": "tsx scripts/svg-experiments/v1/update-index.mts && tsx scripts/svg-experiments/v2/update-index.mts && tsx scripts/svg-experiments/v3/update-index.mts && tsx scripts/svg-experiments/verified/update-index.mts"
+  },
+  "dependencies": {
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,mjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,css,md}": "prettier --write"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@swc/core",
+      "sharp"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^25.7.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "16.2.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.4",
+    "prettier": "^3.8.3",
+    "tsx": "^4.22.0",
+    "typescript": "^6.0.3"
+  }
+}

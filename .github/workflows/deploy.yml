@@ -1,0 +1,87 @@
+# Deploy to GitHub Pages on every push to shepherd.
+#
+# Two-job pattern from GitHub's own Pages docs:
+#   1. build  — runs Next's static export, uploads the `out/` dir as a
+#                 Pages artifact.
+#   2. deploy — promotes the artifact to the gh-pages environment.
+#
+# Why this pattern (and not peaceiris/actions-gh-pages or pushing to a
+# gh-pages branch by hand):
+#   - It uses GitHub's first-party Pages deployment API (no token
+#     management, no force-push to a branch).
+#   - The `id-token: write` permission lets the deploy job mint a
+#     short-lived OIDC token, so the runner never needs a PAT.
+#   - The `pages` environment shows deploy history + rollbacks in the
+#     repo's Environments UI.
+#
+# Required repo settings (one-time, in repo Settings → Pages):
+#   - Source: "GitHub Actions"
+#   - That's it. No branch selection, no folder selection.
+#
+# basePath is configured in next.config.ts to "/svg-experiments" in
+# production builds. That matches the URL the site is served at:
+#   https://moefingers.github.io/svg-experiments/
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [shepherd]
+  # Allow manual runs from the Actions tab.
+  workflow_dispatch:
+
+# Cancel any in-flight deploy when a new push lands — the latest commit
+# is the only one that matters.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+# Default permissions are read-only for everything. Each job opts in to
+# the writes it actually needs.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build (static export)
+        run: pnpm build
+        env:
+          # Make sure Next reads NODE_ENV=production so next.config.ts
+          # turns on basePath. (setup-node sets it, but be explicit.)
+          NODE_ENV: production
+
+      # Pages expects to be handed a single artifact directory. Next's
+      # static export emits `out/`.
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
