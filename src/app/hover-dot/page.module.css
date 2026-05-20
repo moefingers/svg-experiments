@@ -1,0 +1,111 @@
+.shell {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  background: radial-gradient(
+    ellipse at top,
+    rgba(40, 40, 70, 1) 0%,
+    rgba(15, 15, 25, 1) 70%
+  );
+  min-height: 100vh;
+  color: rgba(220, 220, 235, 0.92);
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  color: rgba(180, 180, 200, 0.6);
+  text-decoration: none;
+}
+.backLink:hover {
+  color: rgba(220, 220, 235, 0.95);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.intro {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  max-width: 48rem;
+  color: rgba(180, 180, 200, 0.78);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.cardLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.cardLabel strong {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cardMeta {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.625rem;
+  color: rgba(180, 180, 200, 0.6);
+}
+
+/* Stage — moody dark backdrop for the dots so the glow has somewhere
+   to read. Border softens the SVG/card transition. */
+.stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(20, 25, 45, 1) 0%,
+    rgba(10, 12, 22, 1) 100%
+  );
+}
+
+.notes {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.notesTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.notes ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: rgba(180, 180, 200, 0.85);
+}

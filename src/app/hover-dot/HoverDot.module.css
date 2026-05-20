@@ -1,0 +1,29 @@
+/* The blink class is applied for 80ms when grace expires and we're
+   about to contract the title. A quick brightness pulse signals
+   "releasing your hover" before the text shrinks away. */
+.blinking {
+  filter: brightness(1.6);
+  transition: filter 30ms ease-out;
+}
+
+/*
+ * Title styling — SVG <text>. Note `text-shadow` works on SVG text in
+ * modern browsers (Chromium 73+, Firefox 84+, Safari 14+). On older
+ * engines the title still renders correctly, just without the glow.
+ *
+ * Font size is intentionally smallish — the dot is the focus; the
+ * title is supporting evidence. ~13px sans-serif feels right.
+ */
+.title {
+  font-family: var(--font-geist-sans, system-ui), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  fill: rgba(245, 250, 255, 0.95);
+  user-select: none;
+  /* Transition the text-shadow so the blink flash propagates smoothly. */
+  transition: filter 80ms ease-out;
+}
+
+.titleBlinking {
+  filter: brightness(1.5);
+}

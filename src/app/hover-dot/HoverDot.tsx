@@ -1,0 +1,219 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import styles from "./HoverDot.module.css";
+
+/**
+ * A glowing dot that types its title on hover.
+ *
+ * - On hover-enter (mouseenter on the invisible hit-target circle), the
+ *   title types in character-by-character. The dot's glow grows softly
+ *   underneath the text as it types.
+ * - As long as the browser considers the cursor "still hovering" (no
+ *   leave event), the title stays open — even if the user is motionless
+ *   for minutes. The browser's hover signal is the engagement contract.
+ * - On hover-leave, a grace-period timer fires (default 800ms). During
+ *   grace the title is still visible. If the user re-enters before grace
+ *   expires, the timer is cancelled and the title stays.
+ * - When grace expires, the title performs a quick "blink" (brightness
+ *   flash) then rapidly contracts (un-types 3× faster than typed in)
+ *   and the glow shrinks back to its idle size.
+ *
+ * The component is fully self-contained — drop one anywhere with `x`,
+ * `y`, and `title` props. For the museum integration, multiple dots
+ * sharing a global "only one hovered at a time" rule live in a wrapper
+ * that coordinates them; this component handles its own state.
+ *
+ * Typing speed: total duration is FIXED at `typeDuration` ms regardless
+ * of title length — short titles type at a slower per-char rate,
+ * long titles faster. Keeps the hover-to-readable time consistent.
+ */
+export interface HoverDotProps {
+  title: string;
+  /** Center position in stage coords (px). */
+  x: number;
+  /** Center position in stage coords (px). */
+  y: number;
+  /** Total duration of the typing animation. */
+  typeDuration?: number;
+  /** Untype is 3× faster (this multiplier applied to typeDuration). */
+  contractSpeedRatio?: number;
+  /** Grace period after mouse-leave before contraction starts. */
+  graceMs?: number;
+  /** Idle dot glow radius (px). */
+  idleGlowRadius?: number;
+  /** Expanded dot glow radius when fully typed (px). */
+  expandedGlowRadius?: number;
+  /** Hit-target radius — invisible larger circle that catches hover. */
+  hitTargetRadius?: number;
+  /** Vertical offset of the title from the dot center (px, positive = below). */
+  titleOffsetY?: number;
+  /**
+   * Text-shadow stack for the title. Multiple shadows give a layered
+   * halo — tighter shadows for sharp definition, wider shadows for
+   * atmospheric glow.
+   */
+  textShadow?: string;
+}
+
+const DEFAULT_TEXT_SHADOW = [
+  "0 0 4px rgba(180, 200, 255, 0.95)",
+  "0 0 10px rgba(140, 180, 255, 0.7)",
+  "0 0 24px rgba(100, 160, 240, 0.45)",
+  "0 0 48px rgba(80, 140, 220, 0.25)",
+].join(", ");
+
+export function HoverDot({
+  title,
+  x,
+  y,
+  typeDuration = 400,
+  contractSpeedRatio = 3,
+  graceMs = 800,
+  idleGlowRadius = 6,
+  expandedGlowRadius = 14,
+  hitTargetRadius = 24,
+  titleOffsetY = 28,
+  textShadow = DEFAULT_TEXT_SHADOW,
+}: HoverDotProps) {
+  // active = browser currently considers cursor hovering (between
+  // onMouseEnter and onMouseLeave). Drives the typing animation forward.
+  const [active, setActive] = useState(false);
+  // typedChars = 0..title.length. Animates between 0 and full length
+  // via the rAF loop below.
+  const [typedChars, setTypedChars] = useState(0);
+  // blinking = brief brightness flash applied at the moment grace
+  // expires and contraction begins. Pure CSS class toggle.
+  const [blinking, setBlinking] = useState(false);
+
+  // Grace timer fires after onMouseLeave — until it fires, the title
+  // stays open. Cancelled by a re-entry.
+  const graceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleEnter = () => {
+    if (graceTimer.current) {
+      clearTimeout(graceTimer.current);
+      graceTimer.current = null;
+    }
+    setActive(true);
+  };
+  const handleLeave = () => {
+    if (graceTimer.current) clearTimeout(graceTimer.current);
+    graceTimer.current = setTimeout(() => {
+      // Blink + contract: flash class on for 80ms, then start the
+      // untype animation by setting active=false.
+      setBlinking(true);
+      setTimeout(() => {
+        setBlinking(false);
+        setActive(false);
+      }, 80);
+      graceTimer.current = null;
+    }, graceMs);
+  };
+
+  // rAF-driven typing animation.
+  //
+  // We don't use a spring here — the typed-character count needs to
+  // land on integer values (you can't type half a character). Linear
+  // interpolation over the fixed duration is the right tool.
+  useEffect(() => {
+    let frame: number;
+    const startedAt = performance.now();
+    const startCharCount = typedChars;
+    const targetCharCount = active ? title.length : 0;
+    if (startCharCount === targetCharCount) return; // already there
+    // Untype runs faster than typing.
+    const effectiveDuration = active
+      ? typeDuration
+      : typeDuration / contractSpeedRatio;
+
+    function tick(now: number) {
+      const t = Math.min(1, (now - startedAt) / effectiveDuration);
+      const next = Math.round(
+        startCharCount + (targetCharCount - startCharCount) * t,
+      );
+      setTypedChars(next);
+      if (t < 1) {
+        frame = requestAnimationFrame(tick);
+      }
+    }
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, title.length, typeDuration]);
+
+  // Clean up the grace timer if the component unmounts mid-grace.
+  useEffect(() => {
+    return () => {
+      if (graceTimer.current) clearTimeout(graceTimer.current);
+    };
+  }, []);
+
+  // Glow radius interpolates linearly with typing progress.
+  const typeProgress = title.length === 0 ? 0 : typedChars / title.length;
+  const currentGlowRadius =
+    idleGlowRadius + (expandedGlowRadius - idleGlowRadius) * typeProgress;
+
+  // Inline glow style — radius animates per render. Using transform:
+  // scale would be cheaper but the radial gradient's apparent size
+  // would scale uniformly, which clips the falloff at the edges. We
+  // re-emit the SVG circle radius each frame instead.
+  return (
+    <g>
+      {/* Visible glow — radial gradient circle, soft falloff. Radius
+          scales with typing progress so the dot "breathes outward" as
+          the title types. */}
+      <circle
+        cx={x}
+        cy={y}
+        r={currentGlowRadius}
+        fill="url(#hover-dot-glow)"
+        className={blinking ? styles.blinking : ""}
+        pointerEvents="none"
+      />
+
+      {/* Crisp center pinpoint — always at idle radius so the dot has
+          a stable visual anchor regardless of how big the glow gets. */}
+      <circle
+        cx={x}
+        cy={y}
+        r={2.2}
+        fill="rgba(255, 255, 255, 0.95)"
+        pointerEvents="none"
+      />
+
+      {/* Invisible hit target — much larger than the visible dot so
+          tiny cursors can find it forgivingly. */}
+      <circle
+        cx={x}
+        cy={y}
+        r={hitTargetRadius}
+        fill="transparent"
+        pointerEvents="all"
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+        style={{ cursor: "pointer" }}
+      />
+
+      {/* Typed title — rendered as SVG <text> so it sits in the same
+          coordinate system as the dot. text-shadow doesn't apply to
+          SVG text, so we use SVG filter (feGaussianBlur stack) at the
+          stage level OR layered text-shadows on a foreignObject. Here
+          we use the simplest approach: SVG text plus a CSS filter-
+          based glow.
+          The dy="0.71em" baseline trick is removed because we want
+          the text top-of-cap to sit at y+titleOffsetY. */}
+      <text
+        x={x}
+        y={y + titleOffsetY}
+        textAnchor="middle"
+        dominantBaseline="hanging"
+        className={`${styles.title} ${blinking ? styles.titleBlinking : ""}`}
+        style={{ textShadow }}
+        pointerEvents="none"
+      >
+        {title.slice(0, typedChars)}
+      </text>
+    </g>
+  );
+}

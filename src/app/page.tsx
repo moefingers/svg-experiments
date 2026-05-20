@@ -59,6 +59,12 @@ const GALLERIES: Gallery[] = [
     sample: "• → ⬣",
     inlinePreview: true,
   },
+  {
+    title: "Hover dot",
+    href: "/hover-dot",
+    sample: "• Music",
+    inlinePreview: true,
+  },
 ];
 
 export default function Home() {
