@@ -47,6 +47,12 @@ const GALLERIES: Gallery[] = [
     sample: "△ ⇄ ⬡",
     inlinePreview: true,
   },
+  {
+    title: "Polyhedra",
+    href: "/polyhedra",
+    sample: "⌬",
+    inlinePreview: true,
+  },
 ];
 
 export default function Home() {

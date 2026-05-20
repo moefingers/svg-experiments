@@ -1,0 +1,113 @@
+.shell {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 0 4rem;
+}
+
+.header {
+  max-width: 42rem;
+  margin: 0 auto 2rem;
+  padding: 0 1.5rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  color: #71717a;
+  text-decoration: none;
+}
+.backLink:hover {
+  color: #18181b;
+}
+@media (prefers-color-scheme: dark) {
+  .backLink:hover {
+    color: #fafafa;
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.intro {
+  font-size: 0.875rem;
+  color: #52525b;
+  line-height: 1.5;
+}
+.intro code {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  .intro {
+    color: #a1a1aa;
+  }
+  .intro code {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.variant {
+  margin-bottom: 3rem;
+}
+
+.variantHeader {
+  max-width: 42rem;
+  margin: 0 auto 1rem;
+  padding: 0 1.5rem;
+}
+
+.variantTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.variantSubtitle {
+  font-size: 0.875rem;
+  color: #52525b;
+  margin: 0;
+}
+@media (prefers-color-scheme: dark) {
+  .variantSubtitle {
+    color: #a1a1aa;
+  }
+}
+
+.variantStats {
+  font-size: 0.75rem;
+  color: #71717a;
+  margin: 0.5rem 0 0;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/*
+ * Canvas: full width capped at min(100vh, 100vw) per spec. The aspect-
+ * ratio of 1 keeps it square; max-height plus max-width enforces the cap.
+ * Centered horizontally.
+ */
+.canvas {
+  width: min(100vh, 100vw);
+  height: min(100vh, 100vw);
+  max-width: 100%;
+  margin: 0 auto;
+  /* Subtle background so the polyhedron has something to sit against. */
+  background: rgba(0, 0, 0, 0.02);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  .canvas {
+    background: rgba(255, 255, 255, 0.02);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+}
