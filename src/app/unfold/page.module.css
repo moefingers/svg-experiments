@@ -1,0 +1,170 @@
+.shell {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  /* Dark background — glass billboards read best on something with
+     contrast to bounce light off. Keeps the rest of the gallery's
+     theme support but this page is intentionally moody. */
+  background: radial-gradient(
+    ellipse at top,
+    rgba(40, 40, 70, 1) 0%,
+    rgba(15, 15, 25, 1) 70%
+  );
+  min-height: 100vh;
+  color: rgba(220, 220, 235, 0.92);
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  color: rgba(180, 180, 200, 0.6);
+  text-decoration: none;
+}
+.backLink:hover {
+  color: rgba(220, 220, 235, 0.95);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.intro {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  max-width: 48rem;
+  color: rgba(180, 180, 200, 0.75);
+}
+.intro code {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.78125rem;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.replayButton,
+.toggleButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(220, 220, 235, 0.92);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 150ms,
+    border-color 150ms;
+}
+.replayButton:hover,
+.toggleButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Card — click anywhere to re-trigger the variant. Hosts the
+   debug label + the billboard. Background is slightly lifted from
+   the page so the billboard's glass has a surface to sit on. */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.025);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background 150ms,
+    border-color 150ms;
+}
+.card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.cardLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.cardLabel strong {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cardMeta {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  color: rgba(180, 180, 200, 0.6);
+}
+
+.cardStage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 14rem;
+  margin-top: 0.5rem;
+}
+
+/* Billboard content — title / year / desc. Constrained inside the
+   final hexagon's "safe" area. */
+.billboardContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+.billboardTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.billboardYear {
+  font-size: 0.6875rem;
+  margin: 0;
+  color: rgba(180, 180, 200, 0.7);
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.billboardDesc {
+  font-size: 0.6875rem;
+  margin: 0.25rem 0 0;
+  line-height: 1.35;
+  color: rgba(200, 200, 220, 0.78);
+  /* Constrain to hexagon's inscribed-square-ish region. */
+  max-width: 8rem;
+}

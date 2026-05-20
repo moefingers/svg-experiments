@@ -53,6 +53,12 @@ const GALLERIES: Gallery[] = [
     sample: "⌬",
     inlinePreview: true,
   },
+  {
+    title: "Unfolding billboard",
+    href: "/unfold",
+    sample: "• → ⬣",
+    inlinePreview: true,
+  },
 ];
 
 export default function Home() {
