@@ -54,6 +54,22 @@ export interface HoverDotProps {
    * atmospheric glow.
    */
   textShadow?: string;
+  /**
+   * Delay before typing begins after hover-enter (ms). The dot stays
+   * idle during this delay — no glow expansion, no characters. After
+   * the delay, typing begins as normal. Use to give the interaction a
+   * "settle, then introduce" rhythm.
+   */
+  startDelay?: number;
+  /** Font size for the typed title (px). Default 13. */
+  titleFontSize?: number;
+  /**
+   * Render a blinking caret (|) at the end of the typed text while
+   * active. Reinforces the "is being typed" metaphor.
+   */
+  showCaret?: boolean;
+  /** Font family for the title. Default uses Geist sans. */
+  titleFontFamily?: string;
 }
 
 const DEFAULT_TEXT_SHADOW = [
@@ -75,9 +91,14 @@ export function HoverDot({
   hitTargetRadius = 24,
   titleOffsetY = 28,
   textShadow = DEFAULT_TEXT_SHADOW,
+  startDelay = 0,
+  titleFontSize = 13,
+  showCaret = false,
+  titleFontFamily,
 }: HoverDotProps) {
   // active = browser currently considers cursor hovering (between
-  // onMouseEnter and onMouseLeave). Drives the typing animation forward.
+  // onMouseEnter and onMouseLeave). Sphere pauses + typing kicks off
+  // when active flips true (after startDelay if any).
   const [active, setActive] = useState(false);
   // typedChars = 0..title.length. Animates between 0 and full length
   // via the rAF loop below.
@@ -89,15 +110,35 @@ export function HoverDot({
   // Grace timer fires after onMouseLeave — until it fires, the title
   // stays open. Cancelled by a re-entry.
   const graceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Start-delay timer fires startDelay ms after onMouseEnter to begin
+  // typing. Cancelled if the user leaves before it fires.
+  const startTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleEnter = () => {
     if (graceTimer.current) {
       clearTimeout(graceTimer.current);
       graceTimer.current = null;
     }
-    setActive(true);
+    // If startDelay is zero, kick off immediately. Otherwise wait — the
+    // dot stays idle until the delay elapses, then we flip active.
+    if (startDelay <= 0) {
+      setActive(true);
+    } else if (!startTimer.current) {
+      startTimer.current = setTimeout(() => {
+        setActive(true);
+        startTimer.current = null;
+      }, startDelay);
+    }
   };
   const handleLeave = () => {
+    // If we're still in the start-delay window (typing hasn't begun),
+    // just cancel the start timer — no need for a grace period because
+    // there's nothing visible to dismiss yet.
+    if (startTimer.current) {
+      clearTimeout(startTimer.current);
+      startTimer.current = null;
+      return;
+    }
     if (graceTimer.current) clearTimeout(graceTimer.current);
     graceTimer.current = setTimeout(() => {
       // Blink + contract: flash class on for 80ms, then start the
@@ -142,10 +183,11 @@ export function HoverDot({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, title.length, typeDuration]);
 
-  // Clean up the grace timer if the component unmounts mid-grace.
+  // Clean up dangling timers on unmount.
   useEffect(() => {
     return () => {
       if (graceTimer.current) clearTimeout(graceTimer.current);
+      if (startTimer.current) clearTimeout(startTimer.current);
     };
   }, []);
 
@@ -195,24 +237,25 @@ export function HoverDot({
         style={{ cursor: "pointer" }}
       />
 
-      {/* Typed title — rendered as SVG <text> so it sits in the same
-          coordinate system as the dot. text-shadow doesn't apply to
-          SVG text, so we use SVG filter (feGaussianBlur stack) at the
-          stage level OR layered text-shadows on a foreignObject. Here
-          we use the simplest approach: SVG text plus a CSS filter-
-          based glow.
-          The dy="0.71em" baseline trick is removed because we want
-          the text top-of-cap to sit at y+titleOffsetY. */}
+      {/* Typed title — SVG <text> with optional blinking caret. The
+          caret is a second <tspan> rendered after the typed slice
+          when showCaret is true and we're active. The caret blink is
+          driven by a CSS animation on the .caret class. */}
       <text
         x={x}
         y={y + titleOffsetY}
         textAnchor="middle"
         dominantBaseline="hanging"
         className={`${styles.title} ${blinking ? styles.titleBlinking : ""}`}
-        style={{ textShadow }}
+        style={{
+          textShadow,
+          fontSize: titleFontSize,
+          ...(titleFontFamily ? { fontFamily: titleFontFamily } : {}),
+        }}
         pointerEvents="none"
       >
-        {title.slice(0, typedChars)}
+        <tspan>{title.slice(0, typedChars)}</tspan>
+        {showCaret && active && <tspan className={styles.caret}>|</tspan>}
       </text>
     </g>
   );

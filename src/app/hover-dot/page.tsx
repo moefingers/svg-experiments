@@ -22,6 +22,14 @@ interface Variant {
   textShadow?: string;
   /** Sample titles to show on the stage. */
   dots: { title: string; x: number; y: number }[];
+  /** Delay before typing begins after hover (ms). */
+  startDelay?: number;
+  /** Title font size override (px). */
+  titleFontSize?: number;
+  /** Show blinking caret while active. */
+  showCaret?: boolean;
+  /** Font family override. */
+  titleFontFamily?: string;
 }
 
 const SAMPLE_TITLES = ["Music Search", "MilestO-W-N", "JavaScript & DOM"];
@@ -114,6 +122,95 @@ const VARIANTS: Variant[] = [
     expandedGlowRadius: 14,
     dots: [{ title: "Quick dismiss", x: 150, y: 100 }],
   },
+  // ─── Slow + tight derivations (selected favorites) ─────────────
+  // Slow typing + tight glow expansion = the deliberate / restrained
+  // posture. Derivatives below push along that axis or add a small
+  // variation to see if it enhances the calm vibe.
+  {
+    label: "Slow + tight (baseline)",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Slow + tight + 150ms start delay",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    startDelay: 150,
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Slow + tight + 300ms start delay",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    startDelay: 300,
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Slow + tight + larger font (15px)",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    titleFontSize: 15,
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Slow + tight + blinking caret",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    showCaret: true,
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Slow + tight + monospace",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    titleFontFamily:
+      'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Slow + tight + caret + mono",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    showCaret: true,
+    titleFontFamily:
+      'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Slow + tight (3 dots)",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    dots: [
+      { title: "Music Search", x: 70, y: 90 },
+      { title: "MilestO-W-N", x: 220, y: 60 },
+      { title: "JavaScript & DOM", x: 150, y: 150 },
+    ],
+  },
+  {
+    label: "Very slow + very tight (1200ms / 8→9)",
+    typeDuration: 1200,
+    graceMs: 1500,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 9,
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
 ];
 
 const STAGE_WIDTH = 300;
@@ -170,6 +267,10 @@ export default function HoverDotPage() {
                   idleGlowRadius={variant.idleGlowRadius}
                   expandedGlowRadius={variant.expandedGlowRadius}
                   textShadow={variant.textShadow}
+                  startDelay={variant.startDelay}
+                  titleFontSize={variant.titleFontSize}
+                  showCaret={variant.showCaret}
+                  titleFontFamily={variant.titleFontFamily}
                 />
               ))}
             </svg>

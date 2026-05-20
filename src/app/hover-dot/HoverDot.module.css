@@ -27,3 +27,23 @@
 .titleBlinking {
   filter: brightness(1.5);
 }
+
+/* Blinking caret — appears after the typed text while `active` is
+   true. ~1Hz blink. Slight horizontal padding (via emoji-style space
+   handled by leading whitespace in the tspan would work but we keep
+   it simple here — the | character has its own inherent left margin
+   via the SVG text layout. */
+.caret {
+  animation: hover-dot-caret-blink 1.05s steps(2, end) infinite;
+}
+
+@keyframes hover-dot-caret-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
