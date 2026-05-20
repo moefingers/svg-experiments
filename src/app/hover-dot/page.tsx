@@ -30,7 +30,12 @@ interface Variant {
   showCaret?: boolean;
   /** Font family override. */
   titleFontFamily?: string;
+  /** Hologram flicker style. */
+  flickerStyle?: "none" | "subtle" | "medium" | "glitchy";
 }
+
+const MONO_FONT =
+  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace';
 
 const SAMPLE_TITLES = ["Music Search", "MilestO-W-N", "JavaScript & DOM"];
 
@@ -211,6 +216,73 @@ const VARIANTS: Variant[] = [
     expandedGlowRadius: 9,
     dots: [{ title: "Music Search", x: 150, y: 100 }],
   },
+  // ─── Flicker variants on the locked baseline ─────────────────
+  // Locked: mono + slow (800ms) + caret + flash-on-dismissal.
+  // The only variable below is the hologram-flicker style on the
+  // title while open. None means no flicker (the current default);
+  // subtle/medium/glitchy push the "live signal" feel.
+  {
+    label: "Locked baseline (no flicker)",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    showCaret: true,
+    titleFontFamily: MONO_FONT,
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Locked + subtle flicker",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    showCaret: true,
+    titleFontFamily: MONO_FONT,
+    flickerStyle: "subtle",
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Locked + medium flicker",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    showCaret: true,
+    titleFontFamily: MONO_FONT,
+    flickerStyle: "medium",
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  {
+    label: "Locked + glitchy flicker",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    showCaret: true,
+    titleFontFamily: MONO_FONT,
+    flickerStyle: "glitchy",
+    dots: [{ title: "Music Search", x: 150, y: 100 }],
+  },
+  // Final 3-dot composition at the chosen baseline + medium flicker
+  // (best guess at the museum default). Multi-dot interaction shows
+  // how the flicker reads when multiple titles can be open at once
+  // (hover grace allows overlap).
+  {
+    label: "Locked + medium flicker (3 dots)",
+    typeDuration: 800,
+    graceMs: 1200,
+    idleGlowRadius: 8,
+    expandedGlowRadius: 10,
+    showCaret: true,
+    titleFontFamily: MONO_FONT,
+    flickerStyle: "medium",
+    dots: [
+      { title: "Music Search", x: 70, y: 90 },
+      { title: "MilestO-W-N", x: 220, y: 60 },
+      { title: "JavaScript & DOM", x: 150, y: 150 },
+    ],
+  },
 ];
 
 const STAGE_WIDTH = 300;
@@ -271,6 +343,7 @@ export default function HoverDotPage() {
                   titleFontSize={variant.titleFontSize}
                   showCaret={variant.showCaret}
                   titleFontFamily={variant.titleFontFamily}
+                  flickerStyle={variant.flickerStyle}
                 />
               ))}
             </svg>

@@ -70,6 +70,15 @@ export interface HoverDotProps {
   showCaret?: boolean;
   /** Font family for the title. Default uses Geist sans. */
   titleFontFamily?: string;
+  /**
+   * Hologram-style flicker on the title while it's open. The flicker
+   * loop only runs while typing has begun and active is true.
+   *   - "none"    no flicker
+   *   - "subtle"  gentle brightness oscillation, no jitter
+   *   - "medium"  brightness + text-shadow blur oscillation
+   *   - "glitchy" wider brightness range + occasional drop ("blip")
+   */
+  flickerStyle?: "none" | "subtle" | "medium" | "glitchy";
 }
 
 const DEFAULT_TEXT_SHADOW = [
@@ -95,6 +104,7 @@ export function HoverDot({
   titleFontSize = 13,
   showCaret = false,
   titleFontFamily,
+  flickerStyle = "none",
 }: HoverDotProps) {
   // active = browser currently considers cursor hovering (between
   // onMouseEnter and onMouseLeave). Sphere pauses + typing kicks off
@@ -237,16 +247,26 @@ export function HoverDot({
         style={{ cursor: "pointer" }}
       />
 
-      {/* Typed title — SVG <text> with optional blinking caret. The
-          caret is a second <tspan> rendered after the typed slice
-          when showCaret is true and we're active. The caret blink is
-          driven by a CSS animation on the .caret class. */}
+      {/* Typed title — SVG <text> with optional blinking caret + flicker.
+          Class composition: base .title, plus .titleBlinking for the
+          grace-expire flash, plus a flicker-* class for the hologram
+          flicker (only while active + typing has begun + flickerStyle
+          isn't "none"). The blinking flash takes precedence — when
+          present, the flicker class isn't applied. */}
       <text
         x={x}
         y={y + titleOffsetY}
         textAnchor="middle"
         dominantBaseline="hanging"
-        className={`${styles.title} ${blinking ? styles.titleBlinking : ""}`}
+        className={[
+          styles.title,
+          blinking ? styles.titleBlinking : "",
+          !blinking && active && typedChars > 0 && flickerStyle !== "none"
+            ? (styles as Record<string, string>)[`flicker-${flickerStyle}`]
+            : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         style={{
           textShadow,
           fontSize: titleFontSize,

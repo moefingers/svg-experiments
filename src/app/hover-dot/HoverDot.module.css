@@ -47,3 +47,118 @@
     opacity: 0;
   }
 }
+
+/* ─── Hologram flicker variants ──────────────────────────────────────
+   Each flicker animation runs forever while the class is applied.
+   Irregular keyframe stops give the flicker an organic-looking pattern
+   even though it's a loop — perfectly periodic flicker reads as a
+   rhythm, not a signal.
+
+   All variants oscillate around brightness 1.0 with no jitter on
+   position or scale (text is small; sub-pixel jitter at SVG text
+   sizes degrades into noise). text-shadow tweaking is the secondary
+   axis: a slight increase in halo width pulses the glow alongside
+   the brightness pulse.
+*/
+
+.flicker-subtle {
+  animation: hover-dot-flicker-subtle 3.7s ease-in-out infinite;
+}
+@keyframes hover-dot-flicker-subtle {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  17% {
+    filter: brightness(0.96);
+  }
+  23% {
+    filter: brightness(1.04);
+  }
+  41% {
+    filter: brightness(0.98);
+  }
+  59% {
+    filter: brightness(1.02);
+  }
+  72% {
+    filter: brightness(0.94);
+  }
+  78% {
+    filter: brightness(1.06);
+  }
+  91% {
+    filter: brightness(1);
+  }
+}
+
+.flicker-medium {
+  animation: hover-dot-flicker-medium 4.1s ease-in-out infinite;
+}
+@keyframes hover-dot-flicker-medium {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 0 transparent);
+  }
+  13% {
+    filter: brightness(0.93) drop-shadow(0 0 1px rgba(140, 180, 255, 0.3));
+  }
+  21% {
+    filter: brightness(1.07) drop-shadow(0 0 2px rgba(180, 200, 255, 0.4));
+  }
+  37% {
+    filter: brightness(0.97);
+  }
+  53% {
+    filter: brightness(1.04) drop-shadow(0 0 1.5px rgba(160, 190, 255, 0.35));
+  }
+  61% {
+    filter: brightness(0.91);
+  }
+  74% {
+    filter: brightness(1.08) drop-shadow(0 0 3px rgba(180, 200, 255, 0.45));
+  }
+  85% {
+    filter: brightness(1);
+  }
+}
+
+.flicker-glitchy {
+  animation: hover-dot-flicker-glitchy 3.3s ease-in-out infinite;
+}
+@keyframes hover-dot-flicker-glitchy {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  11% {
+    filter: brightness(0.88);
+  }
+  13% {
+    filter: brightness(1.12);
+  }
+  19% {
+    filter: brightness(0.6); /* blip — projector struggling */
+  }
+  21% {
+    filter: brightness(1.1);
+  }
+  37% {
+    filter: brightness(0.95);
+  }
+  49% {
+    filter: brightness(1.15);
+  }
+  53% {
+    filter: brightness(0.85);
+  }
+  67% {
+    filter: brightness(0.7); /* second blip */
+  }
+  70% {
+    filter: brightness(1.08);
+  }
+  88% {
+    filter: brightness(1);
+  }
+}
