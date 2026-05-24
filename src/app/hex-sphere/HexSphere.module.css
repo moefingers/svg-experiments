@@ -1,0 +1,23 @@
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  /* Tilt animation updates many polygons every frame; hint to the
+     compositor that this subtree changes often. */
+  will-change: contents;
+  touch-action: none;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  fill: rgba(240, 245, 255, 0.92);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  user-select: none;
+  /* Text fades in/out via the opacity attribute on the <text> element when
+     a face passes the facing-camera threshold; smooth that transition. */
+  transition: opacity 240ms ease-out;
+}

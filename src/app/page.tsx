@@ -65,6 +65,24 @@ const GALLERIES: Gallery[] = [
     sample: "• Music",
     inlinePreview: true,
   },
+  {
+    title: "Hex sphere",
+    href: "/hex-sphere",
+    sample: "⬡ ⬡ ⬡",
+    inlinePreview: true,
+  },
+  {
+    title: "Hex sphere — playground",
+    href: "/hex-sphere-play",
+    sample: "⬡ ⚙",
+    inlinePreview: true,
+  },
+  {
+    title: "Hex sphere — Class II/III",
+    href: "/hex-sphere-classiii",
+    sample: "⬡ ↻",
+    inlinePreview: true,
+  },
 ];
 
 export default function Home() {

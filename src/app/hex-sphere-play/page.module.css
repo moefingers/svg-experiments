@@ -1,0 +1,193 @@
+.shell {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 0 4rem;
+}
+
+.header {
+  max-width: 64rem;
+  margin: 0 auto 1.5rem;
+  padding: 0 1.5rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  color: #71717a;
+  text-decoration: none;
+}
+.backLink:hover {
+  color: #18181b;
+}
+@media (prefers-color-scheme: dark) {
+  .backLink:hover {
+    color: #fafafa;
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.intro {
+  font-size: 0.875rem;
+  color: #52525b;
+  line-height: 1.5;
+  margin: 0;
+}
+@media (prefers-color-scheme: dark) {
+  .intro {
+    color: #a1a1aa;
+  }
+}
+
+/*
+ * Side-by-side: canvas on the left, controls on the right.
+ * Canvas is square, capped by viewport-min so it always fits comfortably
+ * even with the control panel taking ~22rem on the side.
+ */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+  max-width: 88rem;
+  margin: 0 auto;
+}
+@media (min-width: 900px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    align-items: start;
+  }
+}
+
+.canvas {
+  /* Square canvas, capped at viewport height so controls stay visible. */
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 80vh;
+  background: #05060a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* ── Controls panel ─────────────────────────────────────────────── */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-size: 0.8125rem;
+  color: #d4d4d8;
+}
+@media (prefers-color-scheme: light) {
+  .controls {
+    color: #3f3f46;
+  }
+}
+
+.section {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.375rem;
+  padding: 0.75rem 0.875rem 0.875rem;
+  background: rgba(255, 255, 255, 0.015);
+}
+@media (prefers-color-scheme: light) {
+  .section {
+    border-color: rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.015);
+  }
+}
+
+.sectionTitle {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a1a1aa;
+  margin: 0 0 0.625rem;
+}
+@media (prefers-color-scheme: light) {
+  .sectionTitle {
+    color: #71717a;
+  }
+}
+
+.sectionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* ── Slider ─────────────────────────────────────────────────────── */
+
+.slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+}
+
+.sliderLabel {
+  grid-column: 1;
+  font-size: 0.75rem;
+}
+
+.sliderValue {
+  grid-column: 2;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  color: #71717a;
+}
+
+.sliderInput {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: #60a5fa;
+  cursor: pointer;
+}
+
+/* ── Toggle ─────────────────────────────────────────────────────── */
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+.toggle input[type="checkbox"] {
+  accent-color: #60a5fa;
+  cursor: pointer;
+}
+
+/* ── Readout ────────────────────────────────────────────────────── */
+
+.readout {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.readoutLabel {
+  color: #a1a1aa;
+}
+
+.readoutValue {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  color: #d4d4d8;
+}
+@media (prefers-color-scheme: light) {
+  .readoutValue {
+    color: #3f3f46;
+  }
+}
