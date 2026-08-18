@@ -27,6 +27,7 @@ export default function HexSphereClassIIIPage() {
   const [n, setN] = useState(1);
   const [cameraZ, setCameraZ] = useState(3.2);
   const [zoom, setZoom] = useState(1);
+  const [cameraInside, setCameraInside] = useState(false);
   const [tiltRange, setTiltRange] = useState(14);
   const [showLabels, setShowLabels] = useState(false);
   const [highlightPentagons, setHighlightPentagons] = useState(true);
@@ -64,6 +65,7 @@ export default function HexSphereClassIIIPage() {
             mesh={mesh}
             cameraZ={cameraZ}
             zoom={zoom}
+            cameraInside={cameraInside}
             tiltRange={tiltRange}
             showLabels={showLabels}
             highlightPentagons={highlightPentagons}
@@ -127,6 +129,11 @@ export default function HexSphereClassIIIPage() {
               step={1}
               onChange={setTiltRange}
               format={(v) => `${v}°`}
+            />
+            <Toggle
+              label="Camera inside sphere"
+              value={cameraInside}
+              onChange={setCameraInside}
             />
           </Section>
 
