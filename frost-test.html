@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Frost approach verification</title>
+<style>
+  html,body{margin:0;background:#05060a;color:#cde;font-family:ui-monospace,monospace;}
+  .stage{position:fixed;inset:0;overflow:hidden;}
+  /* The REAL backdrop: CSS-rotated img lattice, exactly like the app */
+  .backdrop{position:absolute;top:50%;left:50%;width:max(140vw,140vh);height:max(140vw,140vh);
+            opacity:0.6;transform:translate(-50%,-50%);transform-origin:center;
+            animation:spin 80s linear infinite;}
+  @keyframes spin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+  svg.sphere{position:absolute;inset:0;width:100%;height:100%;}
+  #hud{position:fixed;top:8px;left:8px;z-index:10;background:rgba(0,0,0,.8);padding:10px;
+       white-space:pre;font-size:12px;line-height:1.5;border:1px solid #345;border-radius:6px;}
+  .fo-html{width:100%;height:100%;}
+  .fo-blur{position:absolute;inset:0;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+</style>
+</head>
+<body>
+<div id="hud">measuring…</div>
+<div class="stage" id="stage">
+  <img class="backdrop" id="bd" src="file:///O:/Redundant%20Local/infinite-syndicate/public/radial1bluehalf.svg" alt="">
+  <!-- The sphere SVG. We put: (C) in-svg blurred clipped replica, and (B) a foreignObject+backdrop-filter probe -->
+  <svg class="sphere" id="sphere" viewBox="0 0 1200 1200" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <filter id="frost" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+      </filter>
+      <clipPath id="hexclip" clipPathUnits="userSpaceOnUse" id="hc">
+        <!-- 6 hexagons in a cluster near center, ~110px radius -->
+        <polygon id="h0" points=""/>
+        <polygon id="h1" points=""/>
+        <polygon id="h2" points=""/>
+        <polygon id="h3" points=""/>
+        <polygon id="h4" points=""/>
+        <polygon id="h5" points=""/>
+      </clipPath>
+    </defs>
+
+    <!-- whole-canvas rotation to mimic effectiveRotation -->
+    <g id="canvasRot" transform="rotate(35 600 600)">
+      <!-- (C) frosted backing -->
+      <g clip-path="url(#hexclip)" pointer-events="none">
+        <rect x="0" y="0" width="1200" height="1200" fill="rgba(10,14,28,0.55)"/>
+        <g id="frostGroup" filter="url(#frost)">
+          <image id="frostImg" href="file:///O:/Redundant%20Local/infinite-syndicate/public/radial1bluehalf.svg"
+                 x="-240" y="-240" width="1680" height="1680" opacity="0.7"/>
+        </g>
+      </g>
+      <!-- the labeled polygons (clickable, on top) -->
+      <g id="labels"></g>
+    </g>
+  </svg>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+// Build 6 hexagons in a cluster. Centroids shift a few px per frame to mimic parallax.
+const baseCentroids=[[600,500],[710,560],[710,690],[600,750],[490,690],[490,560]];
+const R=70;
+function hexPts(cx,cy,r,shearX){
+  let p=[];
+  for(let i=0;i<6;i++){const a=Math.PI/180*(60*i-30);
+    // slight perspective shear so polygon deforms per frame
+    let x=cx+r*Math.cos(a)*(1+shearX);
+    let y=cy+r*Math.sin(a);
+    p.push(x.toFixed(1)+","+y.toFixed(1));}
+  return p.join(" ");
+}
+const labelsG=document.getElementById("labels");
+const polys=[];
+for(let i=0;i<6;i++){
+  const pl=document.createElementNS(NS,"polygon");
+  pl.setAttribute("fill","rgba(96,165,250,0.18)");
+  pl.setAttribute("stroke","rgba(147,197,253,0.85)");
+  pl.setAttribute("stroke-width","1.5");
+  labelsG.appendChild(pl);
+  polys.push(pl);
+  const t=document.createElementNS(NS,"text");
+  t.setAttribute("text-anchor","middle");t.setAttribute("fill","#fff");
+  t.setAttribute("font-size","22");t.setAttribute("font-weight","600");
+  t.textContent=["Web","Software","Scooters","Computers","About","Portal"][i];
+  labelsG.appendChild(t);
+  t._isLabel=true;
+}
+const clipPolys=[...Array(6)].map((_,i)=>document.getElementById("h"+i));
+
+const frostGroup=document.getElementById("frostGroup");
+let frostMode="blur"; // blur | static-asset-sim | none
+
+// FPS measurement
+let frames=0,last=performance.now(),fps=0, t0=performance.now();
+const hud=document.getElementById("hud");
+
+function frame(now){
+  const el=(now-t0)/1000;
+  // parallax: tiny idle drift of whole cluster + per-hex shear
+  const driftX=Math.sin(el*0.6)*6, driftY=Math.cos(el*0.4)*5;
+  const shear=Math.sin(el*0.5)*0.04;
+  for(let i=0;i<6;i++){
+    const [cx,cy]=baseCentroids[i];
+    const pts=hexPts(cx+driftX,cy+driftY,R,shear);
+    polys[i].setAttribute("points",pts);
+    clipPolys[i].setAttribute("points",pts);
+    // position label text
+    const t=labelsG.children[i*2+1];
+    t.setAttribute("x",cx+driftX); t.setAttribute("y",cy+driftY+8);
+  }
+  // (C) spin the in-svg replica to approximate the css backdrop angle: 80s/360 => 4.5deg/s
+  const deg=((el)%80)/80*360;
+  document.getElementById("frostImg").setAttribute("transform",`rotate(${deg} 600 600)`);
+
+  frames++;
+  if(now-last>=500){
+    fps=Math.round(frames*1000/(now-last));
+    frames=0;last=now;
+    hud.textContent=
+`FPS: ${fps}
+frostMode: ${frostMode}
+backdrop spin: live CSS @keyframes
+in-svg replica spin: ${deg.toFixed(1)}deg (open-loop)
+filter region: feGaussianBlur stdDev=6
+viewport: ${window.innerWidth}x${window.innerHeight}
+dpr: ${window.devicePixelRatio}`;
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+// expose controls for the test driver
+window.__setFrost=(m)=>{
+  frostMode=m;
+  if(m==="none"){frostGroup.setAttribute("filter","none");}
+  else if(m==="static-asset-sim"){
+    // simulate pre-blurred asset: drop feGaussianBlur, just rotate+clip a (still sharp here) image
+    frostGroup.setAttribute("filter","none");
+  } else {
+    frostGroup.setAttribute("filter","url(#frost)");
+  }
+};
+window.__getFps=()=>fps;
+</script>
+</body>
+</html>
