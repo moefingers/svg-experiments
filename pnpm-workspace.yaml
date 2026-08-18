@@ -1,0 +1,8 @@
+# pnpm v11 canonical: allowBuilds = packages whose install/build scripts may run.
+# Replaces the removed onlyBuiltDependencies/ignoredBuiltDependencies settings +
+# the package.json `pnpm` field (no longer read in v11). See https://pnpm.io/settings
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
